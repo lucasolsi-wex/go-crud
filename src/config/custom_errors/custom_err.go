@@ -35,10 +35,10 @@ func NewBadRequestError(message string) *CustomErr {
 	}
 }
 
-func NewValidationError(message string, causes []Causes) *CustomErr {
+func NewUserValidationFieldsError(message string, causes []Causes) *CustomErr {
 	return &CustomErr{
 		Message: message,
-		Err:     "bad_rest",
+		Err:     "validation_error",
 		Code:    http.StatusBadRequest,
 		Causes:  causes,
 	}
@@ -52,7 +52,7 @@ func NewInternalServerError(message string) *CustomErr {
 	}
 }
 
-func NewNotFoundError(message string) *CustomErr {
+func NewUserNotFoundError(message string) *CustomErr {
 	return &CustomErr{
 		Message: message,
 		Err:     "not_found",
