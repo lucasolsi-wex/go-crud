@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/src/config/validation"
+	"github.com/lucasolsi-wex/go-crud/src/model"
 	"github.com/lucasolsi-wex/go-crud/src/model/request"
+	"github.com/lucasolsi-wex/go-crud/src/model/service"
 	"log"
+	"net/http"
 )
 
 func CreateUser(gc *gin.Context) {
@@ -18,4 +21,14 @@ func CreateUser(gc *gin.Context) {
 		return
 	}
 	fmt.Println(userRequest)
+
+	domain := model.NewUserDomain(userRequest.FirstName, userRequest.LastName, userRequest.Email, userRequest.Age)
+	userService := service.NewUserDomainService()
+	if err := userService.CreateUser(domain); err != nil {
+		gc.JSON(err.Code, err)
+		return
+	}
+
+	gc.String(http.StatusOK, "")
+
 }
