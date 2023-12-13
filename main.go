@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lucasolsi-wex/go-crud/src/controller"
 	"github.com/lucasolsi-wex/go-crud/src/controller/routes"
+	"github.com/lucasolsi-wex/go-crud/src/model/service"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -14,9 +16,12 @@ func main() {
 		return
 	}
 
+	userService := service.NewUserDomainService()
+	userController := controller.NewUserControllerInterface(userService)
+
 	router := gin.Default()
 
-	routes.InitRoutes(&router.RouterGroup)
+	routes.InitRoutes(&router.RouterGroup, userController)
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)

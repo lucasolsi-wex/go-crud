@@ -6,12 +6,12 @@ import (
 	"github.com/lucasolsi-wex/go-crud/src/config/validation"
 	"github.com/lucasolsi-wex/go-crud/src/model"
 	"github.com/lucasolsi-wex/go-crud/src/model/request"
-	"github.com/lucasolsi-wex/go-crud/src/model/service"
+	"github.com/lucasolsi-wex/go-crud/src/view"
 	"log"
 	"net/http"
 )
 
-func CreateUser(gc *gin.Context) {
+func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 	var userRequest request.UserRequest
 
 	if err := gc.ShouldBindJSON(&userRequest); err != nil {
@@ -23,12 +23,12 @@ func CreateUser(gc *gin.Context) {
 	fmt.Println(userRequest)
 
 	domain := model.NewUserDomain(userRequest.FirstName, userRequest.LastName, userRequest.Email, userRequest.Age)
-	userService := service.NewUserDomainService()
-	if err := userService.CreateUser(domain); err != nil {
+
+	if err := uc.service.CreateUser(domain); err != nil {
 		gc.JSON(err.Code, err)
 		return
 	}
 
-	gc.String(http.StatusOK, "")
+	gc.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 
 }

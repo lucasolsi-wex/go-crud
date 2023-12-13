@@ -5,7 +5,7 @@ import (
 	"github.com/lucasolsi-wex/go-crud/src/controller"
 )
 
-func InitRoutes(rg *gin.RouterGroup) {
-	rg.GET("/user/:userId", controller.GetUserById)
-	rg.POST("/user", controller.CreateUser)
+func InitRoutes(rg *gin.RouterGroup, userController controller.UserControllerInterface) {
+	rg.GET("/user/:userId", userController.GetUserById)
+	rg.POST("/user", userController.CreateUser)
 }

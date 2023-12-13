@@ -6,6 +6,5 @@ import (
 )
 
 func (*userDomainService) FindUser(string) (*model.UserDomainInterface, *custom_errors.CustomErr) {
-	//TODO implement me
-	panic("implement me")
+	return nil, nil
 }
