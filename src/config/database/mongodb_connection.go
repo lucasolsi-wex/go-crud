@@ -4,17 +4,27 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"os"
 )
 
-func InitConnection() {
-	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+var (
+	MongoUrl      = "MONGODB_URL"
+	MongoDatabase = "MONGODB_DATABASE_NAME"
+)
+
+func NewMongoDBConnection(
+	ctx context.Context) (*mongo.Database, error) {
+	databaseUri := os.Getenv(MongoUrl)
+	databaseName := os.Getenv(MongoDatabase)
+
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(databaseUri))
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if err := client.Ping(ctx, nil); err != nil {
-		panic(err)
+		return nil, err
 	}
+	return client.Database(databaseName), nil
 }
