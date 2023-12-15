@@ -7,7 +7,6 @@ type UserDomainInterface interface {
 	GetFirstName() string
 	GetLastName() string
 	GetAge() int8
-	ToJSON() (string, error)
 	SetId(string)
 	GetId() string
 }
@@ -49,11 +48,9 @@ func (ud *userDomain) GetLastName() string {
 func (ud *userDomain) GetAge() int8 {
 	return ud.age
 }
-
 func (ud *userDomain) SetId(id string) {
 	ud.id = id
 }
-
 func (ud *userDomain) GetId() string {
 	return ud.id
 }

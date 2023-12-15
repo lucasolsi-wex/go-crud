@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	MongoDBUserDb = "users"
+	MongoDBUserDb = "MONGODB_DATABASE_COLLECTION"
 )
 
 func (repo *userRepository) CreateUser(domainInterface model.UserDomainInterface) (
