@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/src/config/validation"
 	"github.com/lucasolsi-wex/go-crud/src/model"
@@ -20,15 +19,14 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 		gc.JSON(customErr.Code, customErr)
 		return
 	}
-	fmt.Println(userRequest)
 
 	domain := model.NewUserDomain(userRequest.FirstName, userRequest.LastName, userRequest.Email, userRequest.Age)
-
-	if err := uc.service.CreateUser(domain); err != nil {
+	domainResult, err := uc.service.CreateUser(domain)
+	if err != nil {
 		gc.JSON(err.Code, err)
 		return
 	}
 
-	gc.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
+	gc.JSON(http.StatusOK, view.ConvertDomainToResponse(domainResult))
 
 }

@@ -6,7 +6,12 @@ import (
 )
 
 func (ud *userDomainService) CreateUser(
-	userDomain model.UserDomainInterface) *custom_errors.CustomErr {
+	userDomain model.UserDomainInterface) (model.UserDomainInterface, *custom_errors.CustomErr) {
 
-	return nil
+	userDomainRepo, err := ud.repository.CreateUser(userDomain)
+	if err != nil {
+		return nil, err
+	}
+
+	return userDomainRepo, nil
 }

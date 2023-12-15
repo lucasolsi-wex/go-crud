@@ -9,6 +9,7 @@ type UserDomainInterface interface {
 	GetAge() int8
 	ToJSON() (string, error)
 	SetId(string)
+	GetId() string
 }
 
 func NewUserDomain(firstName, lastName, email string, age int8) UserDomainInterface {
@@ -21,11 +22,11 @@ func NewUserDomain(firstName, lastName, email string, age int8) UserDomainInterf
 }
 
 type userDomain struct {
-	Id        string
-	FirstName string `json:"firstName,omitempty"`
-	LastName  string `json:"lastName,omitempty"`
-	Email     string `json:"email,omitempty"`
-	Age       int8   `json:"age,omitempty"`
+	id        string
+	firstName string
+	lastName  string
+	email     string
+	age       int8
 }
 
 func (ud *userDomain) ToJSON() (string, error) {
@@ -37,18 +38,22 @@ func (ud *userDomain) ToJSON() (string, error) {
 }
 
 func (ud *userDomain) GetEmail() string {
-	return ud.Email
+	return ud.email
 }
 func (ud *userDomain) GetFirstName() string {
-	return ud.FirstName
+	return ud.firstName
 }
 func (ud *userDomain) GetLastName() string {
-	return ud.LastName
+	return ud.lastName
 }
 func (ud *userDomain) GetAge() int8 {
-	return ud.Age
+	return ud.age
 }
 
 func (ud *userDomain) SetId(id string) {
-	ud.Id = id
+	ud.id = id
+}
+
+func (ud *userDomain) GetId() string {
+	return ud.id
 }

@@ -4,29 +4,28 @@ import (
 	"context"
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
 	"github.com/lucasolsi-wex/go-crud/src/model"
-	"os"
+	"github.com/lucasolsi-wex/go-crud/src/model/converter"
+	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
-	MongoDBUserDb = "MONGODB_DATABASE_COLLECTION"
+	MongoDBUserDb = "users"
 )
 
 func (repo *userRepository) CreateUser(domainInterface model.UserDomainInterface) (
 	model.UserDomainInterface, *custom_errors.CustomErr) {
-	collectionName := os.Getenv(MongoDBUserDb)
+	collectionName := viper.GetString(MongoDBUserDb)
 	collection := repo.databaseConnection.Collection(collectionName)
 
-	value, err := domainInterface.ToJSON()
-	if err != nil {
-		return nil, custom_errors.NewInternalServerError(err.Error())
-	}
+	value := converter.ConvertDomainToEntity(domainInterface)
 
 	result, err := collection.InsertOne(context.Background(), value)
 	if err != nil {
 		return nil, custom_errors.NewInternalServerError(err.Error())
 	}
 
-	domainInterface.SetId(result.InsertedID.(string))
+	value.Id = result.InsertedID.(primitive.ObjectID)
 
-	return domainInterface, nil
+	return converter.ConvertEntityToDomain(*value), nil
 }
