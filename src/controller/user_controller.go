@@ -13,7 +13,7 @@ func NewUserControllerInterface(serviceInterface service.UserDomainService) User
 
 type UserControllerInterface interface {
 	CreateUser(gc *gin.Context)
-	GetUserById(gc *gin.Context)
+	FindUserById(gc *gin.Context)
 }
 
 type userControllerInterface struct {

@@ -13,10 +13,10 @@ const (
 	MongoDBUserDb = "MONGODB_DATABASE_COLLECTION"
 )
 
-func (repo *userRepository) CreateUser(domainInterface model.UserDomainInterface) (
+func (userRepo *userRepository) CreateUser(domainInterface model.UserDomainInterface) (
 	model.UserDomainInterface, *custom_errors.CustomErr) {
 	collectionName := viper.GetString(MongoDBUserDb)
-	collection := repo.databaseConnection.Collection(collectionName)
+	collection := userRepo.databaseConnection.Collection(collectionName)
 
 	value := converter.ConvertDomainToEntity(domainInterface)
 

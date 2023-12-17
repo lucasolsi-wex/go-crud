@@ -15,4 +15,5 @@ type userRepository struct {
 }
 type UserRepository interface {
 	CreateUser(domainInterface model.UserDomainInterface) (model.UserDomainInterface, *custom_errors.CustomErr)
+	FindUserById(id string) (model.UserDomainInterface, *custom_errors.CustomErr)
 }
