@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/src/config/database"
-	"github.com/lucasolsi-wex/go-crud/src/controller"
 	"github.com/lucasolsi-wex/go-crud/src/controller/routes"
-	"github.com/lucasolsi-wex/go-crud/src/model/service"
-	"github.com/lucasolsi-wex/go-crud/src/repository"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -28,9 +25,7 @@ func main() {
 		return
 	}
 
-	repo := repository.NewUserRepository(dbConnection)
-	userService := service.NewUserDomainService(repo)
-	userController := controller.NewUserControllerInterface(userService)
+	userController := initDependencies(dbConnection)
 
 	router := gin.Default()
 
