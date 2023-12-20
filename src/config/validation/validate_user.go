@@ -9,6 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	en2 "github.com/go-playground/validator/v10/translations/en"
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
+	"github.com/lucasolsi-wex/go-crud/src/model/request"
 )
 
 var (
@@ -47,4 +48,30 @@ func ValidateUserError(
 	} else {
 		return custom_errors.NewBadRequestError("Error while converting fields")
 	}
+}
+
+func ValidateFirstAndLastName(request request.UserRequest) *custom_errors.CustomErr {
+	if len(request.FirstName) == 0 || len(request.LastName) == 0 {
+		errorCauses := []custom_errors.Causes{}
+		cause := custom_errors.Causes{
+			Field:   "firstName/lastName",
+			Message: "User first/last names required",
+		}
+		errorCauses = append(errorCauses, cause)
+		return custom_errors.NewUserValidationFieldsError("Invalid fields", errorCauses)
+	}
+	return nil
+}
+
+func ValidateNameUniqueness(alreadyExists bool) *custom_errors.CustomErr {
+	if alreadyExists {
+		errorCauses := []custom_errors.Causes{}
+		cause := custom_errors.Causes{
+			Field:   "firstName/lastName",
+			Message: "User with the same first and last name already exists",
+		}
+		errorCauses = append(errorCauses, cause)
+		return custom_errors.NewUserValidationFieldsError("Invalid fields", errorCauses)
+	}
+	return nil
 }

@@ -20,6 +20,19 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 		return
 	}
 
+	customErrName := validation.ValidateFirstAndLastName(userRequest)
+	if customErrName != nil {
+		gc.JSON(customErrName.Code, customErrName)
+		return
+	}
+
+	existsNameCombination := uc.service.ExistsByFirstNameAndLastName(userRequest.FirstName, userRequest.LastName)
+	customErrUniqueName := validation.ValidateNameUniqueness(existsNameCombination)
+	if customErrUniqueName != nil {
+		gc.JSON(customErrUniqueName.Code, customErrUniqueName)
+		return
+	}
+
 	domain := model.NewUserDomain(userRequest.FirstName, userRequest.LastName, userRequest.Email, userRequest.Age)
 	domainResult, err := uc.service.CreateUser(domain)
 	if err != nil {
