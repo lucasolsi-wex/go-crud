@@ -12,7 +12,7 @@ func (uc *userControllerInterface) FindUserById(gc *gin.Context) {
 	idToSearch := gc.Param("userId")
 
 	if _, err := primitive.ObjectIDFromHex(idToSearch); err != nil {
-		errorMessage := custom_errors.NewBadRequestError("Invalid id")
+		errorMessage := custom_errors.NewUserNotFoundError("Invalid id")
 		gc.JSON(errorMessage.Code, errorMessage)
 		return
 	}

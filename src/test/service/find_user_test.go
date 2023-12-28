@@ -4,7 +4,7 @@ import (
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
 	"github.com/lucasolsi-wex/go-crud/src/model"
 	"github.com/lucasolsi-wex/go-crud/src/model/service"
-	"github.com/lucasolsi-wex/go-crud/test/mocks"
+	"github.com/lucasolsi-wex/go-crud/src/test/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/mock/gomock"
