@@ -1,4 +1,4 @@
-package request
+package models
 
 type UserRequest struct {
 	FirstName string `json:"firstName,omitempty"`

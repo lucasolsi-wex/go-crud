@@ -5,8 +5,8 @@ import (
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
 	"github.com/lucasolsi-wex/go-crud/src/config/validation"
 	"github.com/lucasolsi-wex/go-crud/src/model"
-	"github.com/lucasolsi-wex/go-crud/src/model/request"
 	"github.com/lucasolsi-wex/go-crud/src/model/service"
+	"github.com/lucasolsi-wex/go-crud/src/models"
 	"github.com/lucasolsi-wex/go-crud/src/view"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -29,7 +29,7 @@ type userControllerInterface struct {
 }
 
 func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
-	var userRequest request.UserRequest
+	var userRequest models.UserRequest
 
 	if err := gc.ShouldBindJSON(&userRequest); err != nil {
 		log.Printf("Error trying to marshal object! Error=%s\n", err.Error())
@@ -76,5 +76,5 @@ func (uc *userControllerInterface) FindUserById(gc *gin.Context) {
 		return
 	}
 
-	gc.JSON(http.StatusOK, view.ConvertDomainToResponse(userDomain))
+	gc.JSON(http.StatusOK, userDomain)
 }
