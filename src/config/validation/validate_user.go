@@ -9,7 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	en2 "github.com/go-playground/validator/v10/translations/en"
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
-	"github.com/lucasolsi-wex/go-crud/src/model/request"
+	"github.com/lucasolsi-wex/go-crud/src/models"
 )
 
 var (
@@ -50,7 +50,7 @@ func ValidateUserError(
 	}
 }
 
-func ValidateFirstAndLastName(request request.UserRequest) *custom_errors.CustomErr {
+func ValidateFirstAndLastName(request models.UserRequest) *custom_errors.CustomErr {
 	if len(request.FirstName) == 0 || len(request.LastName) == 0 {
 		errorCauses := []custom_errors.Causes{}
 		cause := custom_errors.Causes{
