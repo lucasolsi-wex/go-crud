@@ -14,6 +14,10 @@ type userDomainService struct {
 	repository repository.UserRepository
 }
 
+func (ud *userDomainService) ExistsByFirstNameAndLastName(firstName, lastName string) bool {
+	return ud.repository.ExistsByFirstNameAndLastName(firstName, lastName)
+}
+
 func (ud *userDomainService) FindUserById(id string) (*models.UserResponse, *custom_errors.CustomErr) {
 	return ud.repository.FindUserById(id)
 }
