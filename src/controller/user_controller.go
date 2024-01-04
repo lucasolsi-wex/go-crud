@@ -4,10 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
 	"github.com/lucasolsi-wex/go-crud/src/config/validation"
-	"github.com/lucasolsi-wex/go-crud/src/model"
 	"github.com/lucasolsi-wex/go-crud/src/model/service"
 	"github.com/lucasolsi-wex/go-crud/src/models"
-	"github.com/lucasolsi-wex/go-crud/src/view"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
@@ -51,14 +49,13 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 		return
 	}
 
-	domain := model.NewUserDomain(userRequest.FirstName, userRequest.LastName, userRequest.Email, userRequest.Age)
-	domainResult, err := uc.service.CreateUser(domain)
+	domainResult, err := uc.service.CreateUser(userRequest)
 	if err != nil {
 		gc.JSON(err.Code, err)
 		return
 	}
 
-	gc.JSON(http.StatusOK, view.ConvertDomainToResponse(domainResult))
+	gc.JSON(http.StatusOK, domainResult)
 }
 
 func (uc *userControllerInterface) FindUserById(gc *gin.Context) {
