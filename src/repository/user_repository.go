@@ -5,12 +5,15 @@ import (
 	"errors"
 	"fmt"
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
-	"github.com/lucasolsi-wex/go-crud/src/model"
 	"github.com/lucasolsi-wex/go-crud/src/models"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+)
+
+const (
+	MongoDBUserDb = "MONGODB_DATABASE_COLLECTION"
 )
 
 func NewUserRepository(database *mongo.Database) UserRepository {
@@ -44,8 +47,25 @@ func (userRepo *userRepository) FindUserById(id string) (*models.UserResponse, *
 	return userResponse, nil
 }
 
+func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr) {
+	collectionName := viper.GetString(MongoDBUserDb)
+	collection := userRepo.databaseConnection.Collection(collectionName)
+
+	entity := models.NewUser(request.FirstName, request.LastName, request.Email, request.Age)
+
+	result, err := collection.InsertOne(context.Background(), entity)
+
+	if err != nil {
+		return nil, custom_errors.NewInternalServerError(err.Error())
+	}
+
+	entity.Id = result.InsertedID.(primitive.ObjectID)
+
+	return models.FromEntity(entity), nil
+}
+
 type UserRepository interface {
-	CreateUser(domainInterface model.UserDomainInterface) (model.UserDomainInterface, *custom_errors.CustomErr)
+	CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr)
 	FindUserById(id string) (*models.UserResponse, *custom_errors.CustomErr)
 	ExistsByFirstNameAndLastName(firstName, lastName string) bool
 }
