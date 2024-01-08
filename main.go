@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/lucasolsi-wex/go-crud/src/config/database"
 	"github.com/lucasolsi-wex/go-crud/src/controller"
 	"github.com/lucasolsi-wex/go-crud/src/controller/routes"
-	"github.com/lucasolsi-wex/go-crud/src/model/service"
+	"github.com/lucasolsi-wex/go-crud/src/database"
 	"github.com/lucasolsi-wex/go-crud/src/repository"
+	"github.com/lucasolsi-wex/go-crud/src/service"
 	"github.com/spf13/viper"
 	"log"
 )
