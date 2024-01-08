@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
+const (
 	MongoUrl      = "MONGODB_URL"
 	MongoDatabase = "MONGODB_DATABASE_NAME"
 	MongoUser     = "MONGODB_USERNAME"

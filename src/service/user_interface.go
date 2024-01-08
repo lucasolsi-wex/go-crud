@@ -18,7 +18,7 @@ func (ud *userDomainService) ExistsByFirstNameAndLastName(firstName, lastName st
 	return ud.repository.ExistsByFirstNameAndLastName(firstName, lastName)
 }
 
-func (ud *userDomainService) FindUserById(id string) (*models.UserResponse, *custom_errors.CustomErr) {
+func (ud *userDomainService) FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr) {
 	return ud.repository.FindUserById(id)
 }
 
@@ -34,6 +34,6 @@ func (ud *userDomainService) CreateUser(request models.UserRequest) (*models.Use
 
 type UserDomainService interface {
 	CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr)
-	FindUserById(id string) (*models.UserResponse, *custom_errors.CustomErr)
+	FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr)
 	ExistsByFirstNameAndLastName(firstName, lastName string) bool
 }

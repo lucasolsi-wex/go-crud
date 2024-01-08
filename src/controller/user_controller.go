@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
-	"github.com/lucasolsi-wex/go-crud/src/config/validation"
-	"github.com/lucasolsi-wex/go-crud/src/model/service"
 	"github.com/lucasolsi-wex/go-crud/src/models"
+	"github.com/lucasolsi-wex/go-crud/src/service"
+	"github.com/lucasolsi-wex/go-crud/src/validation"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"

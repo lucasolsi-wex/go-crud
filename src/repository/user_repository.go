@@ -36,7 +36,7 @@ func (userRepo *userRepository) ExistsByFirstNameAndLastName(firstName, lastName
 	return false
 }
 
-func (userRepo *userRepository) FindUserById(id string) (*models.UserResponse, *custom_errors.CustomErr) {
+func (userRepo *userRepository) FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr) {
 	collectionName := viper.GetString(MongoDBUserDb)
 	collection := userRepo.databaseConnection.Collection(collectionName)
 
@@ -50,13 +50,14 @@ func (userRepo *userRepository) FindUserById(id string) (*models.UserResponse, *
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			errorMessage := fmt.Sprintf("User not found with ID: %s", id)
 
-			return nil, custom_errors.NewUserNotFoundError(errorMessage)
+			return models.UserResponse{}, custom_errors.NewUserNotFoundError(errorMessage)
 		}
 		errorMessage := "Error in Find User By Id"
-		return nil, custom_errors.NewInternalServerError(errorMessage)
+		return models.UserResponse{}, custom_errors.NewInternalServerError(errorMessage)
 	}
 
-	return userResponse, nil
+	return models.UserResponse{Id: userResponse.Id, FirstName: userResponse.FirstName, LastName: userResponse.LastName,
+		Email: userResponse.Email, Age: userResponse.Age}, nil
 }
 
 func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr) {
@@ -78,6 +79,6 @@ func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.
 
 type UserRepository interface {
 	CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr)
-	FindUserById(id string) (*models.UserResponse, *custom_errors.CustomErr)
+	FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr)
 	ExistsByFirstNameAndLastName(firstName, lastName string) bool
 }
