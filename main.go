@@ -16,6 +16,7 @@ import (
 func main() {
 	viper.SetConfigFile(".env")
 	err := viper.ReadInConfig()
+	gin.SetMode(viper.GetString("GIN_MODE"))
 
 	if err != nil {
 		return
@@ -36,7 +37,7 @@ func main() {
 
 	routes.InitRoutes(&router.RouterGroup, userController)
 
-	if err := router.Run(":8080"); err != nil {
+	if err := router.Run(viper.GetString("GIN_PORT")); err != nil {
 		log.Fatal(err)
 	}
 }
