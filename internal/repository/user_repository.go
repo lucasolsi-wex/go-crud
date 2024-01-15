@@ -4,8 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
-	"github.com/lucasolsi-wex/go-crud/src/models"
+	"github.com/lucasolsi-wex/go-crud/internal/models"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,7 +35,7 @@ func (userRepo *userRepository) ExistsByFirstNameAndLastName(firstName, lastName
 	return false
 }
 
-func (userRepo *userRepository) FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr) {
+func (userRepo *userRepository) FindUserById(id string) (models.UserResponse, *models.CustomErr) {
 	collectionName := viper.GetString(MongoDBUserDb)
 	collection := userRepo.databaseConnection.Collection(collectionName)
 
@@ -50,17 +49,17 @@ func (userRepo *userRepository) FindUserById(id string) (models.UserResponse, *c
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			errorMessage := fmt.Sprintf("User not found with ID: %s", id)
 
-			return models.UserResponse{}, custom_errors.NewUserNotFoundError(errorMessage)
+			return models.UserResponse{}, models.NewUserNotFoundError(errorMessage)
 		}
 		errorMessage := "Error in Find User By Id"
-		return models.UserResponse{}, custom_errors.NewInternalServerError(errorMessage)
+		return models.UserResponse{}, models.NewInternalServerError(errorMessage)
 	}
 
 	return models.UserResponse{Id: userResponse.Id, FirstName: userResponse.FirstName, LastName: userResponse.LastName,
 		Email: userResponse.Email, Age: userResponse.Age}, nil
 }
 
-func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr) {
+func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr) {
 	collectionName := viper.GetString(MongoDBUserDb)
 	collection := userRepo.databaseConnection.Collection(collectionName)
 
@@ -69,7 +68,7 @@ func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.
 	result, err := collection.InsertOne(context.Background(), entity)
 
 	if err != nil {
-		return nil, custom_errors.NewInternalServerError(err.Error())
+		return nil, models.NewInternalServerError(err.Error())
 	}
 
 	entity.Id = result.InsertedID.(primitive.ObjectID)
@@ -78,7 +77,7 @@ func (userRepo *userRepository) CreateUser(request models.UserRequest) (*models.
 }
 
 type UserRepository interface {
-	CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr)
-	FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr)
+	CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr)
+	FindUserById(id string) (models.UserResponse, *models.CustomErr)
 	ExistsByFirstNameAndLastName(firstName, lastName string) bool
 }

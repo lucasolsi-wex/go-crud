@@ -1,4 +1,4 @@
-package custom_errors
+package models
 
 import "net/http"
 

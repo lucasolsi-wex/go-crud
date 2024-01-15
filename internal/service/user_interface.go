@@ -1,9 +1,8 @@
 package service
 
 import (
-	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
-	"github.com/lucasolsi-wex/go-crud/src/models"
-	"github.com/lucasolsi-wex/go-crud/src/repository"
+	"github.com/lucasolsi-wex/go-crud/internal/models"
+	"github.com/lucasolsi-wex/go-crud/internal/repository"
 )
 
 func NewUserDomainService(repository repository.UserRepository) UserDomainService {
@@ -18,11 +17,11 @@ func (ud *userDomainService) ExistsByFirstNameAndLastName(firstName, lastName st
 	return ud.repository.ExistsByFirstNameAndLastName(firstName, lastName)
 }
 
-func (ud *userDomainService) FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr) {
+func (ud *userDomainService) FindUserById(id string) (models.UserResponse, *models.CustomErr) {
 	return ud.repository.FindUserById(id)
 }
 
-func (ud *userDomainService) CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr) {
+func (ud *userDomainService) CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr) {
 	userFromRepo, err := ud.repository.CreateUser(request)
 
 	if err != nil {
@@ -33,7 +32,7 @@ func (ud *userDomainService) CreateUser(request models.UserRequest) (*models.Use
 }
 
 type UserDomainService interface {
-	CreateUser(request models.UserRequest) (*models.UserResponse, *custom_errors.CustomErr)
-	FindUserById(id string) (models.UserResponse, *custom_errors.CustomErr)
+	CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr)
+	FindUserById(id string) (models.UserResponse, *models.CustomErr)
 	ExistsByFirstNameAndLastName(firstName, lastName string) bool
 }
