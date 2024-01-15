@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/lucasolsi-wex/go-crud/src/repository"
+	"github.com/lucasolsi-wex/go-crud/internal/repository"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"testing"
