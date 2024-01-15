@@ -8,70 +8,69 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	en2 "github.com/go-playground/validator/v10/translations/en"
-	"github.com/lucasolsi-wex/go-crud/src/config/custom_errors"
-	"github.com/lucasolsi-wex/go-crud/src/models"
+	"github.com/lucasolsi-wex/go-crud/internal/models"
 )
 
 var (
-	Validate         = validator.New()
-	error_translator ut.Translator
+	Validate        = validator.New()
+	errorTranslator ut.Translator
 )
 
 func init() {
 	if val, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		en := en_US.New()
 		un := ut.New(en, en)
-		error_translator, _ = un.GetTranslator("en")
-		en2.RegisterDefaultTranslations(val, error_translator)
+		errorTranslator, _ = un.GetTranslator("en")
+		en2.RegisterDefaultTranslations(val, errorTranslator)
 	}
 }
 
 func ValidateUserError(
-	validationError error) *custom_errors.CustomErr {
+	validationError error) *models.CustomErr {
 	var jsonError *json.UnmarshalTypeError
 	var jsonValidationError validator.ValidationErrors
 
 	if errors.As(validationError, &jsonError) {
-		return custom_errors.NewBadRequestError("Invalid type")
+		return models.NewBadRequestError("Invalid type")
 	} else if errors.As(validationError, &jsonValidationError) {
-		errorCauses := []custom_errors.Causes{}
+		errorCauses := []models.Causes{}
 		for _, e := range validationError.(validator.ValidationErrors) {
-			cause := custom_errors.Causes{
-				Message: e.Translate(error_translator),
+			cause := models.Causes{
+				Message: e.Translate(errorTranslator),
 				Field:   e.Field(),
 			}
 			errorCauses = append(errorCauses, cause)
 		}
 
-		return custom_errors.NewUserValidationFieldsError("Invalid fields!",
+		return models.NewUserValidationFieldsError("Invalid fields!",
 			errorCauses)
 	} else {
-		return custom_errors.NewBadRequestError("Error while converting fields")
+		return models.NewBadRequestError("Error while converting fields")
 	}
 }
 
-func ValidateFirstAndLastName(request models.UserRequest) *custom_errors.CustomErr {
+func ValidateFirstAndLastName(request models.UserRequest) *models.CustomErr {
 	if len(request.FirstName) == 0 || len(request.LastName) == 0 {
-		errorCauses := []custom_errors.Causes{}
-		cause := custom_errors.Causes{
+		errorCauses := []models.Causes{}
+		cause := models.Causes{
 			Field:   "firstName/lastName",
 			Message: "User first/last names required",
 		}
 		errorCauses = append(errorCauses, cause)
-		return custom_errors.NewUserValidationFieldsError("Invalid fields", errorCauses)
+		return models.NewUserValidationFieldsError("Invalid fields", errorCauses)
 	}
 	return nil
 }
 
-func ValidateNameUniqueness(alreadyExists bool) *custom_errors.CustomErr {
+func ValidateNameUniqueness(alreadyExists bool) *models.CustomErr {
 	if alreadyExists {
-		errorCauses := []custom_errors.Causes{}
-		cause := custom_errors.Causes{
+		errorCauses := []models.Causes{}
+		cause := models.Causes{
 			Field:   "firstName/lastName",
 			Message: "User with the same first and last name already exists",
 		}
 		errorCauses = append(errorCauses, cause)
-		return custom_errors.NewUserValidationFieldsError("Invalid fields", errorCauses)
+		return models.NewUserValidationFieldsError("Invalid fields", errorCauses)
 	}
 	return nil
 }

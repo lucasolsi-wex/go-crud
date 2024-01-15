@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/lucasolsi-wex/go-crud/src/models"
-	"github.com/lucasolsi-wex/go-crud/src/service"
+	"github.com/lucasolsi-wex/go-crud/internal/models"
+	"github.com/lucasolsi-wex/go-crud/internal/service"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/mock/gomock"
