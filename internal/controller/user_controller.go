@@ -41,10 +41,9 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 		return
 	}
 
-	existsNameCombination := uc.service.ExistsByFirstNameAndLastName(userRequest.FirstName, userRequest.LastName)
-	customErrUniqueName := validation.ValidateNameUniqueness(existsNameCombination)
-	if customErrUniqueName != nil {
-		gc.JSON(customErrUniqueName.Code, customErrUniqueName)
+	_, err := uc.service.ExistsByFirstNameAndLastName(userRequest.FirstName, userRequest.LastName)
+	if err != nil {
+		gc.JSON(err.Code, err)
 		return
 	}
 
