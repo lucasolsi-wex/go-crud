@@ -9,24 +9,24 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func NewUserDomainService(repository repository.UserRepository) UserDomainService {
-	return &userDomainService{repository}
+func NewUserInterface(repository repository.UserRepository) UserInterfaceService {
+	return &userInterfaceService{repository}
 }
 
-type userDomainService struct {
+type userInterfaceService struct {
 	repository repository.UserRepository
 }
 
-func (ud *userDomainService) ExistsByFirstNameAndLastName(firstName, lastName string) (bool, *models.CustomErr) {
-	uniquenessCheck := ud.repository.ExistsByFirstNameAndLastName(firstName, lastName)
+func (us *userInterfaceService) ExistsByFirstNameAndLastName(firstName, lastName string) (bool, *models.CustomErr) {
+	uniquenessCheck := us.repository.ExistsByFirstNameAndLastName(firstName, lastName)
 	if uniquenessCheck {
 		return false, validation.ValidateNameUniqueness(uniquenessCheck)
 	}
 	return uniquenessCheck, nil
 }
 
-func (ud *userDomainService) FindUserById(id string) (*models.UserResponse, *models.CustomErr) {
-	existingUser, err := ud.repository.FindUserById(id)
+func (us *userInterfaceService) FindUserById(id string) (*models.UserResponse, *models.CustomErr) {
+	existingUser, err := us.repository.FindUserById(id)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			errorMessage := fmt.Sprintf("User not found with ID: %s", id)
@@ -40,9 +40,9 @@ func (ud *userDomainService) FindUserById(id string) (*models.UserResponse, *mod
 	return models.FromEntity(*existingUser), nil
 }
 
-func (ud *userDomainService) CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr) {
+func (us *userInterfaceService) CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr) {
 	userToRepo := models.NewUser(request.FirstName, request.LastName, request.Email, request.Age)
-	userFromRepo, err := ud.repository.CreateUser(userToRepo)
+	userFromRepo, err := us.repository.CreateUser(userToRepo)
 
 	if err != nil {
 		return nil, models.NewInternalServerError(err.Error())
@@ -51,7 +51,7 @@ func (ud *userDomainService) CreateUser(request models.UserRequest) (*models.Use
 	return models.FromEntity(*userFromRepo), nil
 }
 
-type UserDomainService interface {
+type UserInterfaceService interface {
 	CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr)
 	FindUserById(id string) (*models.UserResponse, *models.CustomErr)
 	ExistsByFirstNameAndLastName(firstName, lastName string) (bool, *models.CustomErr)

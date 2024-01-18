@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/internal/controller"
 	"github.com/lucasolsi-wex/go-crud/internal/controller/routes"
@@ -26,18 +27,18 @@ func main() {
 
 	dbConnection, err := database.NewMongoDBConnection(context.Background())
 	if err != nil {
-		return
+		log.Fatal("Error while establishing connection to database: ", err)
 	}
 
 	repo := repository.NewUserRepository(dbConnection)
-	userService := service.NewUserDomainService(repo)
+	userService := service.NewUserInterface(repo)
 	userController := controller.NewUserControllerInterface(userService)
 
 	router := gin.Default()
 
 	routes.InitRoutes(&router.RouterGroup, userController)
 
-	if err := router.Run(viper.GetString("GIN_PORT")); err != nil {
+	if err := endless.ListenAndServe(viper.GetString("GIN_PORT"), router); err != nil {
 		log.Fatal(err)
 	}
 }

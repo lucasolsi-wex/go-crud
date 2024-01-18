@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func NewUserControllerInterface(serviceInterface service.UserDomainService) UserControllerInterface {
+func NewUserControllerInterface(serviceInterface service.UserInterfaceService) UserControllerInterface {
 	return &userControllerInterface{
 		service: serviceInterface,
 	}
@@ -22,7 +22,7 @@ type UserControllerInterface interface {
 }
 
 type userControllerInterface struct {
-	service service.UserDomainService
+	service service.UserInterfaceService
 }
 
 func (uc *userControllerInterface) CreateUser(gc *gin.Context) {

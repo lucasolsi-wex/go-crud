@@ -16,7 +16,7 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockUserDomainService is a mock of UserDomainService interface.
+// MockUserDomainService is a mock of UserInterfaceService interface.
 type MockUserDomainService struct {
 	ctrl     *gomock.Controller
 	recorder *MockUserDomainServiceMockRecorder
