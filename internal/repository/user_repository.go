@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"github.com/lucasolsi-wex/go-crud/internal/models"
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -50,8 +49,7 @@ func (userRepo *userRepository) ExistsByFirstNameAndLastName(firstName, lastName
 }
 
 func (userRepo *userRepository) FindUserById(id string) (*models.UserModel, error) {
-	collectionName := viper.GetString(MongoDBUserDb)
-	collection := userRepo.databaseConnection.Collection(collectionName)
+	collection := userRepo.databaseConnection.Collection(MongoDBUserDb)
 
 	existingUser := &models.UserModel{}
 
@@ -63,8 +61,7 @@ func (userRepo *userRepository) FindUserById(id string) (*models.UserModel, erro
 }
 
 func (userRepo *userRepository) CreateUser(request models.UserModel) (*models.UserModel, error) {
-	collectionName := viper.GetString(MongoDBUserDb)
-	collection := userRepo.databaseConnection.Collection(collectionName)
+	collection := userRepo.databaseConnection.Collection(MongoDBUserDb)
 
 	entity := models.NewUser(request.FirstName, request.LastName, request.Email, request.Age)
 

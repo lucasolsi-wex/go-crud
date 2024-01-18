@@ -6,7 +6,6 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/internal/controller"
-	"github.com/lucasolsi-wex/go-crud/internal/controller/routes"
 	"github.com/lucasolsi-wex/go-crud/internal/database"
 	"github.com/lucasolsi-wex/go-crud/internal/repository"
 	"github.com/lucasolsi-wex/go-crud/internal/service"
@@ -31,12 +30,16 @@ func main() {
 	}
 
 	repo := repository.NewUserRepository(dbConnection)
-	userService := service.NewUserInterface(repo)
+	userService := service.UserInterfaceService{Repository: repo}
 	userController := controller.NewUserControllerInterface(userService)
 
 	router := gin.Default()
 
-	routes.InitRoutes(&router.RouterGroup, userController)
+	v1 := router.Group("/v1")
+	{
+		v1.GET("/user/:userId", userController.FindUserById)
+		v1.POST("/user", userController.CreateUser)
+	}
 
 	if err := endless.ListenAndServe(viper.GetString("GIN_PORT"), router); err != nil {
 		log.Fatal(err)
