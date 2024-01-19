@@ -3,27 +3,9 @@ package validation
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/locales/en_US"
-	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	en2 "github.com/go-playground/validator/v10/translations/en"
 	"github.com/lucasolsi-wex/go-crud/internal/models"
 )
-
-var (
-	Validate        = validator.New()
-	errorTranslator ut.Translator
-)
-
-func init() {
-	if val, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		en := en_US.New()
-		un := ut.New(en, en)
-		errorTranslator, _ = un.GetTranslator("en")
-		en2.RegisterDefaultTranslations(val, errorTranslator)
-	}
-}
 
 func ValidateUserError(
 	validationError error) *models.CustomErr {
@@ -36,7 +18,7 @@ func ValidateUserError(
 		errorCauses := []models.Causes{}
 		for _, e := range validationError.(validator.ValidationErrors) {
 			cause := models.Causes{
-				Message: e.Translate(errorTranslator),
+				Message: e.Error(),
 				Field:   e.Field(),
 			}
 			errorCauses = append(errorCauses, cause)
