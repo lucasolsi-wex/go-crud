@@ -44,15 +44,12 @@ func ValidateFirstAndLastName(request models.UserRequest) *models.CustomErr {
 	return nil
 }
 
-func ValidateNameUniqueness(alreadyExists bool) *models.CustomErr {
-	if alreadyExists {
-		errorCauses := []models.Causes{}
-		cause := models.Causes{
-			Field:   "firstName/lastName",
-			Message: "User with the same first and last name already exists",
-		}
-		errorCauses = append(errorCauses, cause)
-		return models.NewUserValidationFieldsError("Invalid fields", errorCauses)
+func NewNotUniqueNameError() *models.CustomErr {
+	errorCauses := []models.Causes{}
+	cause := models.Causes{
+		Field:   "firstName/lastName",
+		Message: "User with the same first and last name already exists",
 	}
-	return nil
+	errorCauses = append(errorCauses, cause)
+	return models.NewUserValidationFieldsError("Invalid fields", errorCauses)
 }

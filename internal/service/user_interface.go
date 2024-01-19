@@ -13,14 +13,6 @@ type UserInterfaceService struct {
 	Repository repository.UserRepository
 }
 
-func (us UserInterfaceService) ExistsByFirstNameAndLastName(firstName, lastName string) (bool, *models.CustomErr) {
-	uniquenessCheck := us.Repository.ExistsByFirstNameAndLastName(firstName, lastName)
-	if uniquenessCheck {
-		return false, validation.ValidateNameUniqueness(uniquenessCheck)
-	}
-	return uniquenessCheck, nil
-}
-
 func (us UserInterfaceService) FindUserById(id string) (*models.UserResponse, *models.CustomErr) {
 	existingUser, err := us.Repository.FindUserById(id)
 	if err != nil {
@@ -37,6 +29,12 @@ func (us UserInterfaceService) FindUserById(id string) (*models.UserResponse, *m
 }
 
 func (us UserInterfaceService) CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr) {
+	alreadyExists := us.Repository.ExistsByFirstNameAndLastName(request.FirstName, request.LastName)
+
+	if alreadyExists {
+		return nil, validation.NewNotUniqueNameError()
+	}
+
 	userToRepo := models.NewUser(request.FirstName, request.LastName, request.Email, request.Age)
 	userFromRepo, err := us.Repository.CreateUser(userToRepo)
 

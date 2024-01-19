@@ -43,12 +43,6 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 		return
 	}
 
-	_, err := uc.service.ExistsByFirstNameAndLastName(userRequest.FirstName, userRequest.LastName)
-	if err != nil {
-		gc.JSON(http.StatusBadRequest, err)
-		return
-	}
-
 	domainResult, err := uc.service.CreateUser(userRequest)
 	if err != nil {
 		gc.JSON(http.StatusBadRequest, err)

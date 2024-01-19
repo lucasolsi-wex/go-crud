@@ -40,11 +40,11 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // CreateUser mocks base method.
-func (m *MockUserRepository) CreateUser(request models.UserRequest) (*models.UserResponse, *models.CustomErr) {
+func (m *MockUserRepository) CreateUser(request models.UserModel) (*models.UserModel, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", request)
-	ret0, _ := ret[0].(*models.UserResponse)
-	ret1, _ := ret[1].(*models.CustomErr)
+	ret0, _ := ret[0].(*models.UserModel)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
@@ -69,11 +69,11 @@ func (mr *MockUserRepositoryMockRecorder) ExistsByFirstNameAndLastName(firstName
 }
 
 // FindUserById mocks base method.
-func (m *MockUserRepository) FindUserById(id string) (models.UserResponse, *models.CustomErr) {
+func (m *MockUserRepository) FindUserById(id string) (*models.UserModel, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindUserById", id)
-	ret0, _ := ret[0].(models.UserResponse)
-	ret1, _ := ret[1].(*models.CustomErr)
+	ret0, _ := ret[0].(*models.UserModel)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
