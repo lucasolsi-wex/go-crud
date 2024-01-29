@@ -5,7 +5,6 @@ import (
 	"github.com/lucasolsi-wex/go-crud/internal/models"
 	"github.com/lucasolsi-wex/go-crud/internal/service"
 	"github.com/lucasolsi-wex/go-crud/internal/validation"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
 )
@@ -35,17 +34,9 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 		return
 	}
 
-	customErrName := validation.ValidateFirstAndLastName(userRequest)
-	if customErrName != nil {
-		log.Print("Error while creating user. There's already a match for name and last name",
-			customErrName.Error())
-		gc.JSON(http.StatusBadRequest, customErrName)
-		return
-	}
-
-	domainResult, err := uc.service.CreateUser(userRequest)
+	domainResult, err := uc.service.CreateUser(userRequest, gc)
 	if err != nil {
-		gc.JSON(http.StatusBadRequest, err)
+		gc.JSON(err.Code, err)
 		return
 	}
 
@@ -55,15 +46,9 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 func (uc *userControllerInterface) FindUserById(gc *gin.Context) {
 	idToSearch := gc.Param("userId")
 
-	if _, err := primitive.ObjectIDFromHex(idToSearch); err != nil {
-		errorMessage := models.NewBadRequestError("Invalid id")
-		gc.JSON(http.StatusBadRequest, errorMessage)
-		return
-	}
-
-	userDomain, err := uc.service.FindUserById(idToSearch)
+	userDomain, err := uc.service.FindUserById(idToSearch, gc)
 	if err != nil {
-		gc.JSON(http.StatusNotFound, err)
+		gc.JSON(err.Code, err)
 		return
 	}
 

@@ -2,11 +2,11 @@ package repository
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/internal/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 const (
@@ -21,59 +21,48 @@ type userRepository struct {
 	databaseConnection *mongo.Database
 }
 
-func (userRepo *userRepository) ExistsByFirstNameAndLastName(firstName, lastName string) bool {
+func (userRepo *userRepository) ExistsByFirstNameAndLastName(firstName, lastName string, ctx *gin.Context) (bool, error) {
 	collection := userRepo.databaseConnection.Collection(MongoDBUserDb)
 
-	found, _ := collection.Find(context.Background(), bson.M{"firstName": firstName, "lastName": lastName})
+	cursor, err := collection.Find(ctx, bson.M{"firstName": firstName, "lastName": lastName})
+	if err != nil {
+		return false, err
+	}
 	defer func(found *mongo.Cursor, ctx context.Context) {
 		err := found.Close(ctx)
 		if err != nil {
-
+			return
 		}
-	}(found, context.Background())
+	}(cursor, ctx)
 
-	var results []bson.M
-	for found.Next(context.Background()) {
-		var result bson.M
-		err := found.Decode(&result)
-		if err != nil {
-			log.Fatal(err)
-		}
-		results = append(results, result)
-
-		if len(results) == 1 {
-			return true
-		}
-	}
-	return false
+	return cursor.Next(ctx), nil
 }
 
-func (userRepo *userRepository) FindUserById(id string) (*models.UserModel, error) {
+func (userRepo *userRepository) FindUserById(id primitive.ObjectID, ctx *gin.Context) (*models.UserModel, error) {
 	collection := userRepo.databaseConnection.Collection(MongoDBUserDb)
 
 	existingUser := &models.UserModel{}
 
-	objectId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objectId}}
-	err := collection.FindOne(context.Background(), filter).Decode(existingUser)
+	filter := bson.D{{Key: "_id", Value: id}}
+	err := collection.FindOne(ctx, filter).Decode(existingUser)
 
 	return existingUser, err
 }
 
-func (userRepo *userRepository) CreateUser(request models.UserModel) (*models.UserModel, error) {
+func (userRepo *userRepository) CreateUser(entity models.UserModel, ctx *gin.Context) (*models.UserModel, error) {
 	collection := userRepo.databaseConnection.Collection(MongoDBUserDb)
 
-	entity := models.NewUser(request.FirstName, request.LastName, request.Email, request.Age)
-
-	result, err := collection.InsertOne(context.Background(), entity)
-
+	result, err := collection.InsertOne(ctx, entity)
+	if err != nil {
+		return nil, err
+	}
 	entity.Id = result.InsertedID.(primitive.ObjectID)
 
 	return &entity, err
 }
 
 type UserRepository interface {
-	CreateUser(request models.UserModel) (*models.UserModel, error)
-	FindUserById(id string) (*models.UserModel, error)
-	ExistsByFirstNameAndLastName(firstName, lastName string) bool
+	CreateUser(request models.UserModel, ctx *gin.Context) (*models.UserModel, error)
+	FindUserById(id primitive.ObjectID, ctx *gin.Context) (*models.UserModel, error)
+	ExistsByFirstNameAndLastName(firstName, lastName string, ctx *gin.Context) (bool, error)
 }
