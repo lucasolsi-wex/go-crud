@@ -31,19 +31,6 @@ func ValidateUserError(
 	}
 }
 
-func ValidateFirstAndLastName(request models.UserRequest) *models.CustomErr {
-	if len(request.FirstName) == 0 || len(request.LastName) == 0 {
-		errorCauses := []models.Causes{}
-		cause := models.Causes{
-			Field:   "firstName/lastName",
-			Message: "User first/last names required",
-		}
-		errorCauses = append(errorCauses, cause)
-		return models.NewUserValidationFieldsError("Invalid fields", errorCauses)
-	}
-	return nil
-}
-
 func NewNotUniqueNameError() *models.CustomErr {
 	errorCauses := []models.Causes{}
 	cause := models.Causes{

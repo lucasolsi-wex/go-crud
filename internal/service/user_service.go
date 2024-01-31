@@ -41,10 +41,6 @@ func (us UserService) FindUserById(id string, ctx context.Context) (*models.User
 
 func (us UserService) CreateUser(request models.UserRequest, ctx context.Context) (*models.UserResponse, *models.CustomErr) {
 
-	if err := validation.ValidateFirstAndLastName(request); err != nil {
-		return nil, err
-	}
-
 	alreadyExists, err := us.Repository.ExistsByFirstNameAndLastName(request.FirstName, request.LastName, ctx)
 	if err != nil {
 		return nil, models.NewInternalServerError("Error while searching for firstName and lastName")

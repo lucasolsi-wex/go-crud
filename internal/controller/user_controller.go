@@ -30,7 +30,7 @@ func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 	if err := gc.ShouldBindJSON(&userRequest); err != nil {
 		log.Printf("Error trying to marshal object: %v", err.Error())
 		customErr := validation.ValidateUserError(err)
-		gc.JSON(http.StatusBadRequest, customErr)
+		gc.JSON(customErr.Code, customErr)
 		return
 	}
 
