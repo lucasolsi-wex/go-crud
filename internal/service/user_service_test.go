@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/lucasolsi-wex/go-crud/internal/models"
 	"github.com/lucasolsi-wex/go-crud/internal/repository"
 	"github.com/stretchr/testify/assert"
@@ -30,22 +31,22 @@ func TestUserInterface(t *testing.T) {
 	}
 
 	mockRepo := repository.NewMockUserRepository(ctrl)
-	testService := UserInterfaceService{Repository: mockRepo}
+	testService := UserService{Repository: mockRepo}
 
 	t.Run("if first and last name already exists then return error", func(t *testing.T) {
-		mockRepo.EXPECT().ExistsByFirstNameAndLastName("first", "name").Return(true)
+		mockRepo.EXPECT().ExistsByFirstNameAndLastName("first", "name", context.Background()).Return(true, nil)
 
-		result, err := testService.CreateUser(mockUser)
+		result, err := testService.CreateUser(mockUser, context.Background())
 		assert.Nil(t, result)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("if doesnt exists first and last name then return successful user creation", func(t *testing.T) {
 
-		mockRepo.EXPECT().ExistsByFirstNameAndLastName("first", "name").Return(false)
-		mockRepo.EXPECT().CreateUser(userToRepo).Return(&userToRepo, nil)
+		mockRepo.EXPECT().ExistsByFirstNameAndLastName("first", "name", context.Background()).Return(false, nil)
+		mockRepo.EXPECT().CreateUser(userToRepo, context.Background()).Return(&userToRepo, nil)
 
-		result, err := testService.CreateUser(mockUser)
+		result, err := testService.CreateUser(mockUser, context.Background())
 
 		assert.Nil(t, err)
 		assert.NotNil(t, result)
@@ -58,17 +59,19 @@ func TestUserInterface(t *testing.T) {
 	})
 
 	t.Run("if id is valid then return existing user", func(t *testing.T) {
-		mockRepo.EXPECT().FindUserById("1010").Return(&userToRepo, nil)
+		objectId, _ := primitive.ObjectIDFromHex("65b7b286736098b80b440c30")
+		mockRepo.EXPECT().FindUserById(objectId, context.Background()).Return(&userToRepo, nil)
 
-		result, err := testService.FindUserById("1010")
+		result, err := testService.FindUserById("65b7b286736098b80b440c30", context.Background())
 		assert.Error(t, err)
 		assert.NotNil(t, result)
 	})
 
 	t.Run("if there's no matching userId then return error", func(t *testing.T) {
-		mockRepo.EXPECT().FindUserById("1010").Return(nil, mongo.ErrNoDocuments)
+		objectId, _ := primitive.ObjectIDFromHex("65b7b286736098b80b440c30")
+		mockRepo.EXPECT().FindUserById(objectId, context.Background()).Return(nil, mongo.ErrNoDocuments)
 
-		result, err := testService.FindUserById("1010")
+		result, err := testService.FindUserById("65b7b286736098b80b440c30", context.Background())
 		assert.Nil(t, result)
 		assert.NotNil(t, err)
 	})

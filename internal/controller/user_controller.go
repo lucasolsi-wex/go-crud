@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func NewUserControllerInterface(serviceInterface service.UserInterfaceService) UserControllerInterface {
+func NewUserControllerInterface(serviceInterface service.UserService) UserControllerInterface {
 	return &userControllerInterface{
 		service: serviceInterface,
 	}
@@ -21,14 +21,14 @@ type UserControllerInterface interface {
 }
 
 type userControllerInterface struct {
-	service service.UserInterfaceService
+	service service.UserService
 }
 
 func (uc *userControllerInterface) CreateUser(gc *gin.Context) {
 	var userRequest models.UserRequest
 
 	if err := gc.ShouldBindJSON(&userRequest); err != nil {
-		log.Printf("Error trying to marshal object! Error=%s\n", err.Error())
+		log.Printf("Error trying to marshal object: %v", err.Error())
 		customErr := validation.ValidateUserError(err)
 		gc.JSON(http.StatusBadRequest, customErr)
 		return

@@ -10,9 +10,11 @@
 package repository
 
 import (
+	context "context"
 	reflect "reflect"
 
 	models "github.com/lucasolsi-wex/go-crud/internal/models"
+	primitive "go.mongodb.org/mongo-driver/bson/primitive"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -40,45 +42,46 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // CreateUser mocks base method.
-func (m *MockUserRepository) CreateUser(request models.UserModel) (*models.UserModel, error) {
+func (m *MockUserRepository) CreateUser(request models.UserModel, ctx context.Context) (*models.UserModel, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateUser", request)
+	ret := m.ctrl.Call(m, "CreateUser", request, ctx)
 	ret0, _ := ret[0].(*models.UserModel)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateUser indicates an expected call of CreateUser.
-func (mr *MockUserRepositoryMockRecorder) CreateUser(request any) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) CreateUser(request, ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserRepository)(nil).CreateUser), request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserRepository)(nil).CreateUser), request, ctx)
 }
 
 // ExistsByFirstNameAndLastName mocks base method.
-func (m *MockUserRepository) ExistsByFirstNameAndLastName(firstName, lastName string) bool {
+func (m *MockUserRepository) ExistsByFirstNameAndLastName(firstName, lastName string, ctx context.Context) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ExistsByFirstNameAndLastName", firstName, lastName)
+	ret := m.ctrl.Call(m, "ExistsByFirstNameAndLastName", firstName, lastName, ctx)
 	ret0, _ := ret[0].(bool)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ExistsByFirstNameAndLastName indicates an expected call of ExistsByFirstNameAndLastName.
-func (mr *MockUserRepositoryMockRecorder) ExistsByFirstNameAndLastName(firstName, lastName any) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) ExistsByFirstNameAndLastName(firstName, lastName, ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistsByFirstNameAndLastName", reflect.TypeOf((*MockUserRepository)(nil).ExistsByFirstNameAndLastName), firstName, lastName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistsByFirstNameAndLastName", reflect.TypeOf((*MockUserRepository)(nil).ExistsByFirstNameAndLastName), firstName, lastName, ctx)
 }
 
 // FindUserById mocks base method.
-func (m *MockUserRepository) FindUserById(id string) (*models.UserModel, error) {
+func (m *MockUserRepository) FindUserById(id primitive.ObjectID, ctx context.Context) (*models.UserModel, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindUserById", id)
+	ret := m.ctrl.Call(m, "FindUserById", id, ctx)
 	ret0, _ := ret[0].(*models.UserModel)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindUserById indicates an expected call of FindUserById.
-func (mr *MockUserRepositoryMockRecorder) FindUserById(id any) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) FindUserById(id, ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserById", reflect.TypeOf((*MockUserRepository)(nil).FindUserById), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserById", reflect.TypeOf((*MockUserRepository)(nil).FindUserById), id, ctx)
 }

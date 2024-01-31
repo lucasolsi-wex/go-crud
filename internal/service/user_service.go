@@ -1,9 +1,9 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/lucasolsi-wex/go-crud/internal/models"
 	"github.com/lucasolsi-wex/go-crud/internal/repository"
 	"github.com/lucasolsi-wex/go-crud/internal/validation"
@@ -12,11 +12,11 @@ import (
 	"log"
 )
 
-type UserInterfaceService struct {
+type UserService struct {
 	Repository repository.UserRepository
 }
 
-func (us UserInterfaceService) FindUserById(id string, ctx *gin.Context) (*models.UserResponse, *models.CustomErr) {
+func (us UserService) FindUserById(id string, ctx context.Context) (*models.UserResponse, *models.CustomErr) {
 
 	convertedId, err := primitive.ObjectIDFromHex(id)
 
@@ -40,7 +40,7 @@ func (us UserInterfaceService) FindUserById(id string, ctx *gin.Context) (*model
 	return models.FromEntity(*existingUser), nil
 }
 
-func (us UserInterfaceService) CreateUser(request models.UserRequest, ctx *gin.Context) (*models.UserResponse, *models.CustomErr) {
+func (us UserService) CreateUser(request models.UserRequest, ctx context.Context) (*models.UserResponse, *models.CustomErr) {
 
 	if err := validation.ValidateFirstAndLastName(request); err != nil {
 		log.Print("Error while creating user. First and/or LastName is empty")

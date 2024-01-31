@@ -31,7 +31,7 @@ func main() {
 	}
 
 	repo := repository.NewUserRepository(dbConnection)
-	userService := service.UserInterfaceService{Repository: repo}
+	userService := service.UserService{Repository: repo}
 	userController := controller.NewUserControllerInterface(userService)
 
 	router := gin.Default()
