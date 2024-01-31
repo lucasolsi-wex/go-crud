@@ -14,11 +14,12 @@ import (
 )
 
 func main() {
-	viper.SetConfigFile(".env")
+	viper.SetConfigFile("../../.env")
 	err := viper.ReadInConfig()
 	gin.SetMode(viper.GetString("GIN_MODE"))
 
 	if err != nil {
+		log.Fatal("Error while reading properties from .env file")
 		return
 	}
 
