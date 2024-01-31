@@ -40,6 +40,10 @@ func (userRepo *userRepository) FindUserById(id primitive.ObjectID, ctx context.
 	filter := bson.D{{Key: "_id", Value: id}}
 	err := collection.FindOne(ctx, filter).Decode(existingUser)
 
+	if err != nil {
+		return nil, err
+	}
+
 	return existingUser, err
 }
 

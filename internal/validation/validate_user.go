@@ -15,7 +15,7 @@ func ValidateUserError(
 	if errors.As(validationError, &jsonError) {
 		return models.NewBadRequestError("Invalid type")
 	} else if errors.As(validationError, &jsonValidationError) {
-		errorCauses := []models.Causes{}
+		var errorCauses []models.Causes
 		for _, e := range validationError.(validator.ValidationErrors) {
 			cause := models.Causes{
 				Message: e.Error(),
@@ -32,7 +32,7 @@ func ValidateUserError(
 }
 
 func NewNotUniqueNameError() *models.CustomErr {
-	errorCauses := []models.Causes{}
+	var errorCauses []models.Causes
 	cause := models.Causes{
 		Field:   "firstName/lastName",
 		Message: "User with the same first and last name already exists",

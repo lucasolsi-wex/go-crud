@@ -2,13 +2,11 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/lucasolsi-wex/go-crud/internal/models"
 	"github.com/lucasolsi-wex/go-crud/internal/repository"
 	"github.com/lucasolsi-wex/go-crud/internal/validation"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserService struct {
@@ -21,19 +19,16 @@ func (us UserService) FindUserById(id string, ctx context.Context) (*models.User
 
 	if err != nil {
 		message := fmt.Sprintf("Coudn't convert ID: %s to ObjectID", id)
-		errorMessage := models.NewBadRequestError(message)
-		return nil, errorMessage
+		badRequestError := models.NewBadRequestError(message)
+		return nil, badRequestError
 	}
 
 	existingUser, err := us.Repository.FindUserById(convertedId, ctx)
+	if existingUser == nil {
+		return nil, models.NewUserNotFoundError("User not found")
+	}
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			errorMessage := fmt.Sprintf("User not found with ID: %s", id)
-
-			return nil, models.NewUserNotFoundError(errorMessage)
-		}
-		errorMessage := "Error in Find User By Id"
-		return nil, models.NewInternalServerError(errorMessage)
+		return nil, models.NewBadRequestError(err.Error())
 	}
 
 	return models.FromEntity(*existingUser), nil
