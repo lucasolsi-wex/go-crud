@@ -9,7 +9,6 @@ import (
 	"github.com/lucasolsi-wex/go-crud/internal/validation"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 type UserService struct {
@@ -43,7 +42,6 @@ func (us UserService) FindUserById(id string, ctx context.Context) (*models.User
 func (us UserService) CreateUser(request models.UserRequest, ctx context.Context) (*models.UserResponse, *models.CustomErr) {
 
 	if err := validation.ValidateFirstAndLastName(request); err != nil {
-		log.Print("Error while creating user. First and/or LastName is empty")
 		return nil, err
 	}
 
