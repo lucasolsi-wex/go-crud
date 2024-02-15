@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+WORKDIR /app/cmd/user-api
+
 RUN go mod download
 
 RUN go build -o main .

@@ -1,12 +1,12 @@
-package custom_errors
+package models
 
 import "net/http"
 
 type CustomErr struct {
 	Message string   `json:"message,omitempty"`
 	Err     string   `json:"error,omitempty"`
-	Code    int      `json:"code,omitempty"`
 	Causes  []Causes `json:"causes,omitempty"`
+	Code    int      `json:"-"`
 }
 
 type Causes struct {
@@ -16,15 +16,6 @@ type Causes struct {
 
 func (r *CustomErr) Error() string {
 	return r.Message
-}
-
-func NewCustomErr(message, err string, code int, causes []Causes) *CustomErr {
-	return &CustomErr{
-		Message: message,
-		Err:     err,
-		Code:    code,
-		Causes:  causes,
-	}
 }
 
 func NewBadRequestError(message string) *CustomErr {
@@ -39,8 +30,8 @@ func NewUserValidationFieldsError(message string, causes []Causes) *CustomErr {
 	return &CustomErr{
 		Message: message,
 		Err:     "validation_error",
-		Code:    http.StatusBadRequest,
 		Causes:  causes,
+		Code:    http.StatusBadRequest,
 	}
 }
 

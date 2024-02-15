@@ -26,19 +26,14 @@ git clone https://github.com/lucasolsi-wex/ps-tag-onboarding-go
 cd ps-tag-onboarding-go
 ```
 
-3. Switch to development branch:
+3. Switch to structure-refactor branch:
 ```shell
-git checkout development
+git checkout structure-refactor
 ```
 
-4. Run the database container:
+4. Run the containers:
 ```shell
 docker-compose up -d
-```
-
-5. Compile the application
-```shell
-go run .
 ```
 
 ## Endpoints
